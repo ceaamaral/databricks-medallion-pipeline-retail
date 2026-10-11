@@ -1,0 +1,5 @@
+sale_id,customer_id,store_id,date_string,amount,shipping_status,customer_state
+101,501,1,2026-10-01,150.50,Delivered,RJ
+102,502,2,2026-10-01,300.00,Pending,SP
+103,501,1,2026-10-02,45.00,Delivered,RJ
+104,503,3,2026-10-03,1200.00,Pending,MG
