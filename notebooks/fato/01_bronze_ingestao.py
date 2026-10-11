@@ -1,0 +1,24 @@
+from pyspark.sql.functions import current_timestamp, col
+
+# Origem dos arquivos
+raw_sales_path = "/Volumes/workspace/default/raw_data/sales.csv"
+raw_stores_path = "/Volumes/workspace/default/raw_data/stores.json"
+
+# 1. Leitura do CSV bruto de Vendas
+df_sales_raw = spark.read \
+    .option("header", "true") \
+    .option("inferSchema", "true") \
+    .csv(raw_sales_path)
+
+# Adicionando metadados de auditoria
+df_sales_bronze = df_sales_raw \
+    .withColumn("ingestion_timestamp", current_timestamp()) \
+    .withColumn("source_file", col("_metadata.file_path"))
+
+# Gravando na Camada Bronze (Delta Lake)
+df_sales_bronze.write \
+    .format("delta") \
+    .mode("overwrite") \
+    .saveAsTable("medallion_pipe_retail.bronze.sales")
+
+display(spark.sql("SELECT * FROM medallion_pipe_retail.bronze.sales LIMIT 10"))
